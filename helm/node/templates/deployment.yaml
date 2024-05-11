@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: node
+    labels:
+      app: app1
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: app1
+    template:
+        metadata:
+            labels:
+                app: app1
+        spec:
+            containers:
+                - name: app1
+                  image: k3lv1n/node-app-dummy:latest
+                  ports:
+                    - containerPort: 3000
+                  readinessProbe:
+                    httpGet:
+                        path: /health
+                        port: 3000
+                    initialDelaySeconds: 10
+                    periodSeconds: 10
+                    successThreshold: 1
+                    failureThreshold: 3
+                  livenessProbe:
+                    httpGet:
+                        path: /health
+                        port: 3000
+                    initialDelaySeconds: 10
+                    periodSeconds: 10
+                    timeoutSeconds: 5
+                    successThreshold: 1
+                    failureThreshold: 3

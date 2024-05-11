@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: python
+    labels:
+      app: app2
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: app2
+    template:
+        metadata:
+            labels:
+                app: app2
+        spec:
+            containers:
+                - name: app2
+                  image: k3lv1n/python-dummy-app:latest
+                  ports:
+                    - containerPort: 3001
+                  readinessProbe:
+                    httpGet:
+                        path: /health
+                        port: 3001
+                    initialDelaySeconds: 10
+                    periodSeconds: 10
+                    successThreshold: 1
+                    failureThreshold: 3
+                  livenessProbe:
+                    httpGet:
+                        path: /health
+                        port: 3001
+                    initialDelaySeconds: 10
+                    periodSeconds: 10
+                    timeoutSeconds: 5
+                    successThreshold: 1
+                    failureThreshold: 3
